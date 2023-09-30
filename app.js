@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
     status: true,
     data: {
       documentationUrl:
-        "https://documenter.getpostman.com/view/20062547/2s9XxtxFaR",
+        "https://documenter.getpostman.com/view/20062547/2s9YJaYj5T",
     },
   });
 });
