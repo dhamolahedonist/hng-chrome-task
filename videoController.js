@@ -21,12 +21,14 @@ const uploadVideo = async (req, res) => {
     const { originalname, path } = req.file;
     const fileExtension = originalname.split(".").pop();
 
+    const uniqueFileName = `${Date.now()}_${originalname}`;
+
     const fileData = fs.readFileSync(path);
 
     // Set the S3 parameters
     const params = {
       Bucket: "samchrometask",
-      Key: originalname,
+      Key: uniqueFileName,
       Body: fileData,
     };
 
