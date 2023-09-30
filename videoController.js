@@ -42,7 +42,7 @@ const uploadVideo = async (req, res) => {
 
         // Store file information in MongoDB
         const video = new Video({
-          filename: originalname,
+          filename: uniqueFileName,
           s3Location: data.Location,
         });
         // console.log(video);
@@ -53,7 +53,7 @@ const uploadVideo = async (req, res) => {
         transcribe(data.Location, videoId, fileExtension);
 
         res.json({
-          filename: originalname,
+          filename: uniqueFileName,
           s3Location: data.Location,
           transcription: {
             status: "IN_PROGRESS",

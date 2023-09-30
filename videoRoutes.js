@@ -20,6 +20,6 @@ const router = express.Router();
 router.post("/upload", upload.single("video"), uploadVideo);
 router.get("/videos/:videoId", getVideo);
 router.get("/videos", getAllVideo);
-// router.get("/share/:uniqueId", shareVideo);
+// router.get("/share/:uniqueId", generateVideoUrl);
 
 module.exports = router;
