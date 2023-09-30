@@ -17,7 +17,6 @@ const uploadVideo = async (req, res) => {
     if (!req.file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
-    // console.log("Received file:", req.file);
 
     const { originalname, path } = req.file;
     const fileExtension = originalname.split(".").pop();
@@ -54,6 +53,9 @@ const uploadVideo = async (req, res) => {
         res.json({
           filename: originalname,
           s3Location: data.Location,
+          transcription: {
+            status: "IN_PROGRESS",
+          },
         });
       }
     });
@@ -79,8 +81,7 @@ async function transcribe(fileUrl, videoId, fileExtension) {
       const data = await transcribeClient.send(
         new StartTranscriptionJobCommand(params)
       );
-      //   console.log("Success - put", data);
-      const transcriptionJobName = data.TranscriptionJob.TranscriptionJobName;
+
       return data; // For unit tests.
     } catch (err) {
       console.log("Error", err);
@@ -115,8 +116,21 @@ const getVideo = async (req, res) => {
     if (!video) {
       return res.status(404).json({ message: "Video not found" });
     }
+    const jsonKey = `${videoId}.json`;
 
-    res.json(video);
+    const s3Params = {
+      Bucket: "samchrometask",
+      Key: jsonKey,
+    };
+    const s3ObjectExists = await s3.headObject(s3Params).promise();
+
+    if (!s3ObjectExists) {
+      return res.status(404).json({ message: "JSON file not found in S3" });
+    }
+    const s3Object = await s3.getObject(s3Params).promise();
+    const jsonContent = JSON.parse(s3Object.Body.toString("utf-8"));
+
+    res.json({ video, jsonContent });
   } catch (error) {
     console.error("Error retrieving video:", error);
     res.status(500).json({ error: "Error retrieving video" });
