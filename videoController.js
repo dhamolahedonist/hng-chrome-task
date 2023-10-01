@@ -53,6 +53,7 @@ const uploadVideo = async (req, res) => {
         transcribe(data.Location, videoId, fileExtension);
 
         res.json({
+          message: "successfully uploaded",
           filename: uniqueFileName,
           s3Location: data.Location,
           transcription: {
